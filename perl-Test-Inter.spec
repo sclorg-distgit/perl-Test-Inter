@@ -2,7 +2,7 @@
 
 Name:           %{?scl_prefix}perl-Test-Inter
 Version:        1.09
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Framework for more readable interactive test scripts
 License:        GPL+ or Artistic
 URL:            https://metacpan.org/release/Test-Inter
@@ -16,6 +16,7 @@ BuildRequires:  make
 BuildRequires:  %{?scl_prefix}perl-generators
 BuildRequires:  %{?scl_prefix}perl-interpreter
 BuildRequires:  %{?scl_prefix}perl(:VERSION) >= 5.6
+BuildRequires:  %{?scl_prefix}perl(Config)
 BuildRequires:  %{?scl_prefix}perl(ExtUtils::MakeMaker) >= 6.76
 BuildRequires:  %{?scl_prefix}perl(strict)
 BuildRequires:  %{?scl_prefix}perl(warnings)
@@ -25,7 +26,6 @@ BuildRequires:  %{?scl_prefix}perl(File::Basename)
 BuildRequires:  %{?scl_prefix}perl(IO::File)
 BuildRequires:  %{?scl_prefix}perl(lib)
 # Tests only:
-BuildRequires:  %{?scl_prefix}perl(Config)
 # File::Find::Rule not used
 BuildRequires:  %{?scl_prefix}perl(Storable) >= 1.01
 BuildRequires:  %{?scl_prefix}perl(Test::More)
@@ -43,6 +43,7 @@ replacement.
 %setup -q -n Test-Inter-%{version}
 %patch0 -p1
 chmod -x examples/*
+%{?scl:scl enable %{scl} '}perl -MConfig -i -pe %{?scl:'"}'%{?scl:"'}s{^#!/usr/bin/perl}{$Config{startperl}}%{?scl:'"}'%{?scl:"'} examples/*%{?scl:'}
 
 %build
 %{?scl:scl enable %{scl} '}perl Makefile.PL INSTALLDIRS=vendor NO_PACKLIST=1 NO_PERLLOCAL=1 && %{make_build}%{?scl:'}
@@ -63,6 +64,9 @@ unset RELEASE_TESTING TI_END TI_MODE TI_NOCLEAN TI_QUIET TI_START TI_TESTNUM \
 %{_mandir}/man3/*
 
 %changelog
+* Tue Mar 17 2020 Petr Pisar <ppisar@redhat.com> - 1.09-5
+- Normalize shebangs in the examples (bug #1813336)
+
 * Fri Jan 03 2020 Jitka Plesnikova <jplesnik@redhat.com> - 1.09-4
 - SCL
 
